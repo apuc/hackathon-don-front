@@ -14,9 +14,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 import HeaderMain from '../components/MainScreen/HeaderMain'
 import SendButton from '../components/SendButton'
+import Loader from '../components/Loader'
 
 const CodeConfirmationScreen = ({ navigation, route }) => {
   const [code, setCode] = useState(['', '', '', ''])
+  const [isLoading, setIsLoading] = useState(false)
 
   const inputRefs = useRef(new Array(code.length))
 
@@ -40,6 +42,7 @@ const CodeConfirmationScreen = ({ navigation, route }) => {
   }, [code])
 
   const handleAuth = async () => {
+    setIsLoading(true)
     await axios
       .post('user/check-auth-code', {
         code: '1234',
@@ -58,6 +61,11 @@ const CodeConfirmationScreen = ({ navigation, route }) => {
         )
         console.warn(err)
       })
+      .finally(() => setIsLoading(false))
+  }
+
+  if (isLoading) {
+    return <Loader />
   }
 
   return (

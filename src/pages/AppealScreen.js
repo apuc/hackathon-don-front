@@ -1,31 +1,38 @@
-// import { useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { StyleSheet, SafeAreaView, ScrollView, Text, View } from 'react-native'
-// import axios from 'axios'
+import axios from 'axios'
 
 import HeaderMain from '../components/MainScreen/HeaderMain'
 import UserNameBlock from '../components/MainScreen/UserNameBlock'
 import ReferenceToMain from '../components/ReferenceToMain'
 import CategoryItem from '../components/AppealScreen/CategoryItem'
-import { categories } from '../Constants'
 import StepsThreePosition from '../components/StepsTreePosition'
+import Loader from '../components/Loader'
+
+import { categories } from '../Constants'
 
 const AppealScreen = ({ navigation }) => {
-  // const [categories, setCategories] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
 
-  // useEffect(() => {
-  //   const getCategories = async () => {
-  //     await axios
-  //       .get('categories')
-  //       .then(async (res) => {
-  //         console.log(res.data)
-  //       })
-  //       .catch((err) => {
-  //         console.warn(err)
-  //       })
-  //   }
+  useEffect(() => {
+    const getCategories = async () => {
+      await axios
+        .get('categories')
+        .then(async (res) => {
+          console.log(res.data)
+        })
+        .catch((err) => {
+          console.warn(err)
+        })
+        .finally(() => setIsLoading(false))
+    }
 
-  //   getCategories()
-  // }, [])
+    getCategories()
+  }, [])
+
+  if (isLoading) {
+    return <Loader />
+  }
 
   return (
     <SafeAreaView style={styles.container}>

@@ -6,14 +6,17 @@ import axios from 'axios'
 import HeaderMain from '../components/MainScreen/HeaderMain'
 import UserNameBlock from '../components/MainScreen/UserNameBlock'
 import Statement from '../components/StatementNearbyScreen/Statement'
+import Loader from '../components/Loader'
 
 const MyAppealsScreen = () => {
   const [statements, setStatements] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     const getApplications = async () => {
       const userId = await AsyncStorage.getItem('userId')
       if (userId) {
+        setIsLoading(true)
         await axios
           .get(`petition/show-by-user/${userId}`)
           .then(async (res) => {
@@ -22,11 +25,16 @@ const MyAppealsScreen = () => {
           .catch((err) => {
             console.warn(err)
           })
+          .finally(() => setIsLoading(false))
       }
     }
 
     getApplications()
   }, [])
+
+  if (isLoading) {
+    return <Loader />
+  }
 
   return (
     <SafeAreaView>

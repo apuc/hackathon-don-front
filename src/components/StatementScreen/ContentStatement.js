@@ -14,16 +14,19 @@ import axios from 'axios'
 
 import ButtonItem from '../MainScreen/ButtonBlock/ButtonItem'
 import ButtonAddMedia from './ButtonAddMedia'
-import addPhoto from '../../../assets/icons/statement/add-photo.png'
-import addVideo from '../../../assets/icons/statement/add-video.png'
-import plus from '../../../assets/icons/main/buttonItems/plus.png'
 import ReferenceToMain from '../ReferenceToMain'
 import UserNameInputBlock from '../UserNameInputBlock'
 import ContactInputBlock from '../ContactInputBlock'
 import SendButton from '../SendButton'
 import LocationBlock from '../LocationBlock'
-import { categories } from '../../Constants'
 import StepsThreePosition from '../StepsTreePosition'
+import Loader from '../Loader'
+
+import addPhoto from '../../../assets/icons/statement/add-photo.png'
+import addVideo from '../../../assets/icons/statement/add-video.png'
+import plus from '../../../assets/icons/main/buttonItems/plus.png'
+
+import { categories } from '../../Constants'
 
 const ContentStatement = ({ navigation, location, category, note }) => {
   const [isRightEnabled, setIsRightEnabled] = useState(true)
@@ -33,6 +36,7 @@ const ContentStatement = ({ navigation, location, category, note }) => {
   const [email, setEmail] = useState('')
   const [selectedCategory, setSelectedCategory] = useState(category)
   const [description, setDescription] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     const getUserName = async () => {
@@ -57,9 +61,11 @@ const ContentStatement = ({ navigation, location, category, note }) => {
     if (!description) {
       return Alert.alert(
         'Народный Контроль',
-        'Перед отправкой заявки, заполните текст заявки!'
+        'Перед отправкой заявки, заполните описание проблемы!'
       )
     }
+
+    setIsLoading(true)
 
     const userId = await AsyncStorage.getItem('userId')
 
@@ -72,7 +78,7 @@ const ContentStatement = ({ navigation, location, category, note }) => {
         address: {
           latitude: location?.latitude || 0,
           longitude: location?.longitude || 0,
-          ...(note && { explanation: note})
+          ...(note && { explanation: note })
         }
       })
       .then(async (res) => {
@@ -90,6 +96,11 @@ const ContentStatement = ({ navigation, location, category, note }) => {
         )
         console.warn(err)
       })
+      .finally(() => setIsLoading(false))
+  }
+
+  if (isLoading) {
+    return <Loader />
   }
 
   return (

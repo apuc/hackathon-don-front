@@ -12,22 +12,26 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 import ReferenceToMain from '../components/ReferenceToMain'
 import HeaderStatement from '../components/StatementScreen/HeaderStatement'
-import img from '../../assets/img/DetailsScreen/img1.png'
-import videoFile from '../../assets/img/DetailsScreen/video.png'
-import landscaping from '../../assets/icons/appeal/landscaping.png'
 import DateofProblemBlock from '../components/DataOfProblemBlock'
 import LocationBlock from '../components/LocationBlock'
 import Map from '../components/LocationFormScreen/Map'
+import Loader from '../components/Loader'
+
+import img from '../../assets/img/DetailsScreen/img1.png'
+import videoFile from '../../assets/img/DetailsScreen/video.png'
+import landscaping from '../../assets/icons/appeal/landscaping.png'
 import photo from '../../assets/icons/statement/add-photo.png'
 import video from '../../assets/icons/statement/add-video.png'
 
 const DetailsOfStatementScreen = ({ route }) => {
   const [fio, setFio] = useState('')
   const [data, setData] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     const getApplicationInfo = async () => {
       if (data?.id) {
+        setIsLoading(true)
         await axios
           .get(`petition/show/${data?.id}`)
           .then(async (res) => {
@@ -36,6 +40,7 @@ const DetailsOfStatementScreen = ({ route }) => {
           .catch((err) => {
             console.warn(err)
           })
+          .finally(() => setIsLoading(false))
       }
     }
 
@@ -50,6 +55,10 @@ const DetailsOfStatementScreen = ({ route }) => {
     setData(route?.params?.data)
     console.log(route?.params?.data)
   }, [])
+
+  if (isLoading) {
+    return <Loader />
+  }
 
   return (
     <SafeAreaView>

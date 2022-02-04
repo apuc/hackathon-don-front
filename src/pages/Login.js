@@ -13,11 +13,14 @@ import axios from 'axios'
 import ContactInputBlock from '../components/ContactInputBlock'
 import HeaderMain from '../components/MainScreen/HeaderMain'
 import SendButton from '../components/SendButton'
+import Loader from '../components/Loader'
 
 const LoginScreen = ({ navigation }) => {
   const [phone, setPhone] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   const getConfirmationCode = async () => {
+    setIsLoading(true)
     await axios
       .post('user/send-auth-code', {
         recipient: phone
@@ -33,6 +36,11 @@ const LoginScreen = ({ navigation }) => {
         )
         console.warn(err)
       })
+      .finally(() => setIsLoading(false))
+  }
+
+  if (isLoading) {
+    return <Loader />
   }
 
   return (

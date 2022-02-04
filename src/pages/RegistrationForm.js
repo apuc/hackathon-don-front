@@ -9,6 +9,7 @@ import UserNameInputBlock from '../components/UserNameInputBlock'
 import Header from '../components/LoginScreens/Header'
 import RegionBlock from '../components/LoginScreens/RegionBlock'
 import CheckBox from '../components/LoginScreens/CheckBox'
+import Loader from '../components/Loader'
 
 const RegistrationFormScreen = ({ navigation, route }) => {
   const [fio, setFio] = useState('')
@@ -18,6 +19,7 @@ const RegistrationFormScreen = ({ navigation, route }) => {
   const [isDriver, setIsDriver] = useState(false)
   const [confirmNumber, setConfirmNumber] = useState(true)
   const [confirmEmail, setConfirmEmail] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
 
   const tryAuth = async () => {
     if (!phone) {
@@ -27,6 +29,8 @@ const RegistrationFormScreen = ({ navigation, route }) => {
     if (!email) {
       return Alert.alert('Народный Контроль', 'Укажите ваш email!')
     }
+
+    setIsLoading(true)
 
     await axios
       .post('user/store', {
@@ -47,6 +51,11 @@ const RegistrationFormScreen = ({ navigation, route }) => {
         )
         console.warn(err)
       })
+      .finally(() => setIsLoading(false))
+  }
+
+  if (isLoading) {
+    return <Loader />
   }
 
   return (

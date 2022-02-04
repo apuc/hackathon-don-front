@@ -6,8 +6,7 @@ import {
   View,
   Text,
   Pressable,
-  Alert,
-  ActivityIndicator
+  Alert
 } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
@@ -16,10 +15,12 @@ import HeaderMain from '../components/MainScreen/HeaderMain'
 import UserNameBlock from '../components/MainScreen/UserNameBlock'
 import ButtonsBlock from '../components/MainScreen/ButtonBlock/ButtonsBlock'
 import ProblemItem from '../components/MainScreen/ProblemItem'
+import Loader from '../components/Loader'
 
 import img1 from '../../assets/img/main/actualProblems/img1.png'
 import img2 from '../../assets/img/main/actualProblems/img2.png'
 import imageSmall from '../../assets/img/main/actualProblems/imgRound.png'
+
 import { categories } from '../Constants'
 
 const MainScreen = ({ navigation }) => {
@@ -40,7 +41,7 @@ const MainScreen = ({ navigation }) => {
                 email: res.data.data.emil,
                 phone: res.data.data.phone
               })
-            ).then(() => setDataLoaded(true))
+            )
           })
           .catch((err) => {
             Alert.alert(
@@ -49,6 +50,7 @@ const MainScreen = ({ navigation }) => {
             )
             console.warn(err)
           })
+          .finally(() => setDataLoaded(true))
       }
     }
 
@@ -80,11 +82,7 @@ const MainScreen = ({ navigation }) => {
   )
 
   if (!dataLoaded) {
-    return (
-      <View>
-        <ActivityIndicator style={{ paddingTop: 200 }} size='large' />
-      </View>
-    )
+    return <Loader />
   }
 
   return (
